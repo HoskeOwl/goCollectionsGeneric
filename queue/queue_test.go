@@ -26,7 +26,7 @@ func Test(t *testing.T) {
 		t.Errorf("Enqueued value should be 1")
 	}
 
-	check, err = q.Dequeue()
+	check, exists = q.Dequeue()
 	if !exists {
 		t.Errorf("Top element shold exists")
 	}
@@ -34,13 +34,13 @@ func Test(t *testing.T) {
 		t.Errorf("Dequeued value should be 1")
 	}
 
-	check, exists = q.Peek()
+	_, exists = q.Peek()
 	if exists {
 		t.Errorf("Queue have to be empty")
 	}
-	check, err = q.Dequeue()
-	if err == nil {
-		t.Errorf("Dequque have to return error with empty queue")
+	_, exists = q.Dequeue()
+	if exists {
+		t.Errorf("Queue have to be empty")
 	}
 
 	q.Enqueue(1)
