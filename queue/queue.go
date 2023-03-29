@@ -1,5 +1,10 @@
 package queue
 
+import (
+	"fmt"
+	"strings"
+)
+
 type (
 	Queue[QT any] struct {
 		start, end *node[QT]
@@ -14,6 +19,24 @@ type (
 // Create a new queue
 func New[T any]() *Queue[T] {
 	return &Queue[T]{nil, nil, 0}
+}
+
+func (this *Queue[QT]) String() string {
+	if this.length < 1 {
+		return ""
+	}
+	var keys []string = make([]string, this.length)
+	n := this.start
+	var i int = 0
+	for {
+		keys[i] = fmt.Sprint(n.value)
+		i += 1
+		n = n.next
+		if n == nil {
+			break
+		}
+	}
+	return fmt.Sprintf("(%v)", strings.Join(keys, ", "))
 }
 
 // Take the next item off the front of the queue

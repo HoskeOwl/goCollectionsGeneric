@@ -1,5 +1,10 @@
 package set
 
+import (
+	"fmt"
+	"strings"
+)
+
 type (
 	Set[ST comparable] struct {
 		hash map[ST]empty
@@ -16,6 +21,19 @@ func New[T comparable](initial ...T) *Set[T] {
 	}
 
 	return s
+}
+
+func (this *Set[QT]) String() string {
+	if len(this.hash) < 1 {
+		return ""
+	}
+	var keys []string = make([]string, len(this.hash))
+	var i int = 0
+	for val := range this.hash {
+		keys[i] = fmt.Sprint(val)
+		i += 1
+	}
+	return fmt.Sprintf("{%v}", strings.Join(keys, ", "))
 }
 
 // Find the difference between two sets

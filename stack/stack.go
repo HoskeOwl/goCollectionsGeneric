@@ -1,5 +1,10 @@
 package stack
 
+import (
+	"fmt"
+	"strings"
+)
+
 type (
 	Stack[ST any] struct {
 		left   *node[ST]
@@ -12,6 +17,24 @@ type (
 		next  *node[NT]
 	}
 )
+
+func (this *Stack[QT]) String() string {
+	if this.length < 1 {
+		return ""
+	}
+	var keys []string = make([]string, this.length)
+	n := this.left
+	var i int = 0
+	for n != nil {
+		keys[i] = fmt.Sprint(n.value)
+		i += 1
+		n = n.next
+		if n == nil {
+			break
+		}
+	}
+	return fmt.Sprintf("[%v]", strings.Join(keys, ", "))
+}
 
 // Create a new stack
 func New[T any]() *Stack[T] {
@@ -55,6 +78,7 @@ func (this *Stack[ST]) Pop() (res ST, exists bool) {
 
 	n := this.right
 	this.right = n.prev
+	this.right.next = nil
 	this.length--
 	if this.length == 0 {
 		this.left = nil
@@ -76,6 +100,7 @@ func (this *Stack[ST]) PopLeft() (res ST, exists bool) {
 
 	n := this.left
 	this.left = n.next
+	this.right.prev = nil
 	this.length--
 	if this.length == 0 {
 		this.right = nil
@@ -86,11 +111,13 @@ func (this *Stack[ST]) PopLeft() (res ST, exists bool) {
 // Push a value onto the right(top) of the stack
 func (this *Stack[ST]) Push(value ST) {
 	n := &node[ST]{value, this.right, nil}
+	if this.length == 0 {
+		this.left = n
+	} else {
+		this.right.next = n
+	}
 	this.right = n
 	this.length++
-	if this.length == 1 {
-		this.left = n
-	}
 }
 
 // Push a value onto the right(top) of the stack
@@ -101,9 +128,11 @@ func (this *Stack[ST]) PushRight(value ST) {
 // Push a value onto the left(bottom) of the stack
 func (this *Stack[ST]) PushLeft(value ST) {
 	n := &node[ST]{value, nil, this.left}
+	if this.length == 0 {
+		this.right = n
+	} else {
+		this.left.prev = n
+	}
 	this.left = n
 	this.length++
-	if this.length == 1 {
-		this.right = n
-	}
 }
